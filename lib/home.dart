@@ -30,16 +30,13 @@ class MyHome extends StatelessWidget {
 
 //Fungsi Ambil API
 Future<List<Post>> fetchPosts() async {
-  final response = await http.get(
-      Uri.parse('https://pinjamruanguti.000webhostapp.com/api/daftarRuang'));
+  final response = await http
+      .get(Uri.parse('https://webpinjamruang.vercel.app/api/api/daftarRuang'));
 
   if (response.statusCode == 200) {
     dynamic jsonResponse = json.decode(response.body);
-
-    if (jsonResponse is List) {
-      // Jika data langsung dalam bentuk list
-      return jsonResponse.map((post) => Post.fromJson(post)).toList();
-    } else if (jsonResponse is Map && jsonResponse['data'] is List) {
+    print('Data yang diterima: $jsonResponse');
+    if (jsonResponse is Map && jsonResponse['data'] is List) {
       // Jika data dalam bentuk map dengan key 'data'
       List<dynamic> data = jsonResponse['data'];
       return data.map((post) => Post.fromJson(post)).toList();
@@ -73,10 +70,28 @@ class PostList extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(snapshot.data![index].name),
-                subtitle: Text(snapshot.data![index].type),
+              return Container(
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(snapshot.data![index].name),
+                    Text(snapshot.data![index].type),
+                    Text(snapshot.data![index].description),
+                  ],
+                ),
               );
+              // ListTile(
+              //   title: Text(snapshot.data![index].name),
+              //   subtitle: Text(snapshot.data![index].type),
+              // );
             },
           );
         }
